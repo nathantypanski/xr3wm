@@ -1,25 +1,13 @@
-[project]
+[package]
 name = "xr3wm"
-version = "0.0.1"
+version = "0.1.0"
 authors = ["Cristian Kubis <cristian.kubis@tsunix.de>"]
-build = "build.rs"
 
 [dependencies]
-libc = "*"
-log = "*"
-env_logger = "*"
-dylib = "*"
-
-[dependencies.xlib]
-git = "https://github.com/tsurai/rust-xlib.git"
-
-[dependencies.xinerama]
-git = "https://github.com/Kintaro/rust-xinerama.git"
-
-[lib]
-name = "xr3wm"
-path = "src/core.rs"
-
-[[bin]]
-name = "xr3wm"
-path = "src/xr3wm.rs"
+slog = "*"
+slog-term = "*"
+slog-scope = "*"
+slog-stream = "*"
+slog-json = "*"
+error-chain = "*"
+xcb = "*"
