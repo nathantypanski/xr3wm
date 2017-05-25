@@ -3,7 +3,6 @@
 #[macro_use]
 extern crate error_chain;
 
-//#[macro_use(o, slog_log, slog_trace, slog_debug, slog_info, slog_warn, slog_error)]
 #[macro_use]
 extern crate slog;
 #[macro_use]
@@ -11,17 +10,19 @@ extern crate slog_scope;
 extern crate slog_term;
 extern crate slog_stream;
 extern crate slog_json;
-
 extern crate xcb;
 
 mod errors;
+mod window_system;
 
 use errors::*;
-use slog::DrainExt;
+use window_system::{WindowSystem, XWindowSystem};
 
 use std::fs::OpenOptions;
 
 fn init_logger() -> Result<()> {
+    use slog::DrainExt;
+
     let log_path = concat!(env!("HOME"), "/.xr3wm/log");
     let log_file = OpenOptions::new().create(true).write(true).truncate(true).open(log_path).chain_err(|| "unable to create log file")?;
 
@@ -35,20 +36,28 @@ fn init_logger() -> Result<()> {
 fn run() -> Result<()> {
     init_logger()?;
 
-    info!("initialized logger");
+    info!("initializing logger");
 
-    Ok(())
+    let backend = XWindowSystem::initialize().chain_err(|| "unable to initialize Window System")?;
+
+    backend.run()
 }
 
 fn main() {
     if let Err(ref e) = run() {
-        error!("{}", e);
+        use std::io::Write;
+        let stderr = &mut ::std::io::stderr();
+        let errmsg = "Error writing to stderr";
+
+        writeln!(stderr, "error: {}", e).expect(errmsg);
         for e in e.iter().skip(1) {
-            error!("caused by: {}", e);
+            writeln!(stderr, "caused by: {}", e).expect(errmsg);
         }
+
         if let Some(backtrace) = e.backtrace() {
-            error!("backtrace: {:?}", backtrace);
+            writeln!(stderr, "backtrace: {:?}", backtrace).expect(errmsg);
         }
+
         std::process::exit(1);
     }
 }
