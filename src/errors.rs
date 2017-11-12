@@ -1,9 +1,11 @@
-use std::io;
+use std;
 use xcb;
+use log;
 
 error_chain! {
     foreign_links {
         Xcb(xcb::ConnError);
-        Io(io::Error);
+        Fern(log::SetLoggerError);
+        Io(std::io::Error);
     }
 }

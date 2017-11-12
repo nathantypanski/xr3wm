@@ -4,12 +4,10 @@ version = "0.1.0"
 authors = ["Cristian Kubis <cristian.kubis@tsunix.de>"]
 
 [dependencies]
-slog = "~1.5.2"
-slog-term = "~1.5.0"
-slog-scope = "~0.2.2"
-slog-stream = "~1.2.0"
-slog-json = "~1.2.1"
+log = "*"
+fern = "*"
 error-chain = "*"
 
 [dependencies.xcb]
-git = "https://github.com/tsurai/rust-xcb"
+version = "*"
+features = ["xkb"]
