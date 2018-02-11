@@ -217,7 +217,12 @@ impl Workspace {
                 if i < self.unmanaged.urgent.len() {
                     self.unmanaged.urgent.remove(i - 1);
                 } else {
-                    self.managed.urgent.remove(self.unmanaged.urgent.len() - i);
+                    if self.unmanaged.urgent.len() > 0 {
+                        // ERROR XXX: attempted to subtract with overflow
+                        self.managed.urgent.remove(self.unmanaged.urgent.len() - i);
+                    } else {
+                        debug!{"Bad subtract in removing unmanaged window"}
+                    }
                 }
             }
             None => {
