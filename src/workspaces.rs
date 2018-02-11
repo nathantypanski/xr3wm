@@ -207,7 +207,8 @@ impl Workspace {
     }
 
     fn remove_urgent_window(&mut self, window: Window) {
-        let index = self.all_urgent()
+        debug!{"Removing urgent window {}", window}
+        let index = self.unmanaged.urgent()
             .iter()
             .enumerate()
             .find(|&(_, &x)| x == window)
@@ -217,14 +218,16 @@ impl Workspace {
                 if i > 0 && i < self.unmanaged.urgent.len() {
                     self.unmanaged.urgent.remove(i - 1);
                 } else {
-                    if self.unmanaged.urgent.len() > 0 {
-                        // ERROR XXX: attempted to subtract with overflow
-                        debug!{"removing 0. i: {}, len: {}", i, self.unmanaged.urgent.len()}
-                        // self.managed.urgent.remove(self.unmanaged.urgent.len() - i);
-                        // I am not really sure if this is correct, but at least it doesn't crash.
-                        self.unmanaged.urgent.remove(0);
+                    debug!{"removing 0. i: {}, unmanaged.urgent.len: {}, managed.urgent.len: {}",
+                           i, self.unmanaged.urgent.len(), self.managed.urgent.len()}
+                    if i < self.unmanaged.urgent.len() {
+                        if i == 0 {
+                            self.unmanaged.urgent.remove(0);
+                        } else {
+                            self.unmanaged.urgent.remove(i - 1);
+                        }
                     } else {
-                        debug!{"Bad subtract in removing unmanaged window. i: {}, len: {}", i, self.unmanaged.urgent.len()}
+                        self.managed.urgent.remove(i - self.unmanaged.urgent.len());
                     }
                 }
             }
