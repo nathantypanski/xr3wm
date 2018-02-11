@@ -122,8 +122,21 @@ impl Statusbar {
             window_title: ws.get_window_title(workspaces.current().focused_window()),
         });
 
-        let mut stdin = self.child.as_mut().unwrap().stdin.as_mut().unwrap();
-        stdin.write_all(output.as_bytes()).ok();
+        match self.child.as_mut() {
+            Some(child) => {
+                match child.stdin.as_mut() {
+                    Some(stdin) => {
+                        stdin.write_all(output.as_bytes()).ok();
+                    }
+                    None => {
+                        debug!{"Could not get stdin of child"};
+                    }
+                }
+            }
+            None => {
+                debug!{"Could not get child"};
+            }
+        }
     }
 }
 

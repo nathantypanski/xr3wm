@@ -211,12 +211,18 @@ impl Workspace {
             .iter()
             .enumerate()
             .find(|&(_, &x)| x == window)
-            .map(|(i, _)| i)
-            .unwrap();
-        if index < self.unmanaged.urgent.len() {
-            self.unmanaged.urgent.remove(index - 1);
-        } else {
-            self.managed.urgent.remove(self.unmanaged.urgent.len() - index);
+            .map(|(i, _)| i);
+        match index {
+            Some(i) => {
+                if i < self.unmanaged.urgent.len() {
+                    self.unmanaged.urgent.remove(i - 1);
+                } else {
+                    self.managed.urgent.remove(self.unmanaged.urgent.len() - i);
+                }
+            }
+            None => {
+                debug!{"Could not remove urgent window"}
+            }
         }
     }
 
