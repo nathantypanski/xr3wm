@@ -214,14 +214,17 @@ impl Workspace {
             .map(|(i, _)| i);
         match index {
             Some(i) => {
-                if i < self.unmanaged.urgent.len() {
+                if i > 0 && i < self.unmanaged.urgent.len() {
                     self.unmanaged.urgent.remove(i - 1);
                 } else {
                     if self.unmanaged.urgent.len() > 0 {
                         // ERROR XXX: attempted to subtract with overflow
-                        self.managed.urgent.remove(self.unmanaged.urgent.len() - i);
+                        debug!{"removing 0. i: {}, len: {}", i, self.unmanaged.urgent.len()}
+                        // self.managed.urgent.remove(self.unmanaged.urgent.len() - i);
+                        // I am not really sure if this is correct, but at least it doesn't crash.
+                        self.unmanaged.urgent.remove(0);
                     } else {
-                        debug!{"Bad subtract in removing unmanaged window"}
+                        debug!{"Bad subtract in removing unmanaged window. i: {}, len: {}", i, self.unmanaged.urgent.len()}
                     }
                 }
             }
