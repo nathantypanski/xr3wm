@@ -574,9 +574,9 @@ impl Workspaces {
         }
     }
 
-    pub fn get_mut(&mut self, index: usize) -> &mut Workspace {
+    pub fn get_mut(&mut self, index: usize) -> Option<&mut Workspace> {
         if index < self.list.len() {
-            self.list.get_mut(index).unwrap()
+            self.list.get_mut(index)
         } else {
             self.current_mut()
         }
@@ -586,8 +586,8 @@ impl Workspaces {
         self.list.get(self.cur).unwrap()
     }
 
-    pub fn current_mut(&mut self) -> &mut Workspace {
-        self.list.get_mut(self.cur).unwrap()
+    pub fn current_mut(&mut self) -> Option<&mut Workspace> {
+        self.list.get_mut(self.cur)
     }
 
     pub fn all(&self) -> &Vec<Workspace> {
@@ -617,7 +617,10 @@ impl Workspaces {
                     self.list[index].focus_window(ws, config, window);
                     self.switch_to(ws, config, index);
                 } else {
-                    self.current_mut().focus_window(ws, config, window);
+                    match self.current_mut() {
+                        Some(wss) => wss.focus_window(ws, config, window),
+                        None => debug!("focus_window on bad workspace"),
+                    }
                 }
             }
             None => {}

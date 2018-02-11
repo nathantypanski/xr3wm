@@ -60,7 +60,7 @@ impl Cmd {
             }
             Cmd::SendLayoutMsg(ref msg) => {
                 debug!("Cmd::SendLayoutMsg::{:?}", msg);
-                workspaces.current_mut().send_layout_message(msg.clone());
+                workspaces.current_mut().map(|ws| ws.send_layout_message(msg.clone()));
                 workspaces.current().redraw(ws, config);
             }
             Cmd::Reload => {
@@ -107,34 +107,56 @@ impl Cmd {
                 ws.close();
             }
             Cmd::KillClient => {
-                debug!("Cmd::KillClient: {}",
-                       workspaces.current_mut().focused_window());
-                ws.kill_window(workspaces.current_mut().focused_window());
+                match workspaces.current_mut() {
+                    Some(wss) => {
+                        debug!("Cmd::KillClient: {:?}", wss.focused_window());
+                        ws.kill_window(wss.focused_window());
+                    }
+                    None => {}
+                }
             }
             Cmd::FocusUp => {
                 debug!("Cmd::FocusUp: {}", workspaces.current().focused_window());
-                workspaces.current_mut().move_focus(ws, config, MoveOp::Up);
+                match workspaces.current_mut() {
+                    Some(wss) => wss.move_focus(ws, config, MoveOp::Up),
+                    None => {}
+                }
             }
             Cmd::FocusDown => {
                 debug!("Cmd::FocusDown: {}", workspaces.current().focused_window());
-                workspaces.current_mut().move_focus(ws, config, MoveOp::Down);
+                match workspaces.current_mut() {
+                    Some(wss) => wss.move_focus(ws, config, MoveOp::Down),
+                    None => {}
+                }
             }
             Cmd::FocusMaster => {
                 debug!("Cmd::FocusMaster: {}",
                        workspaces.current().focused_window());
-                workspaces.current_mut().move_focus(ws, config, MoveOp::Swap);
+                match workspaces.current_mut() {
+                    Some(wss) => wss.move_focus(ws, config, MoveOp::Swap),
+                    None => debug!("Cmd::FocusMaster on no workspace"),
+                }
             }
             Cmd::SwapUp => {
                 debug!("Cmd::SwapUp: {}", workspaces.current().focused_window());
-                workspaces.current_mut().move_window(ws, config, MoveOp::Up);
+                match workspaces.current_mut() {
+                    Some(wss) => wss.move_window(ws, config, MoveOp::Up),
+                    None => debug!("Cmd::SwapDown on no workspace")
+                }
             }
             Cmd::SwapDown => {
                 debug!("Cmd::SwapDown: {}", workspaces.current().focused_window());
-                workspaces.current_mut().move_window(ws, config, MoveOp::Down);
+                match workspaces.current_mut() {
+                    Some(wss) => wss.move_window(ws, config, MoveOp::Down),
+                    None => debug!("Cmd::SwapDown on no workspace")
+                }
             }
             Cmd::SwapMaster => {
                 debug!("Cmd::SwapMaster: {}", workspaces.current().focused_window());
-                workspaces.current_mut().move_window(ws, config, MoveOp::Swap);
+                match workspaces.current_mut() {
+                    Some(wss) => wss.move_window(ws, config, MoveOp::Swap),
+                    None => {}
+                }
             }
         }
     }
@@ -167,8 +189,14 @@ impl CmdManage {
                     }
                 } else {
                     debug!("CmdManage::Move: {}, {}", window, index);
-                    workspaces.get_mut(index - 1).add_window(ws, config, window);
-                    workspaces.get_mut(index - 1).focus_window(ws, config, window);
+                    match workspaces.get_mut(index - 1) {
+                        Some(wss) => wss.add_window(ws, config, window),
+                        None => {}
+                    }
+                    match workspaces.get_mut(index - 1) {
+                        Some(wss) => wss.focus_window(ws, config, window),
+                        None => {}
+                    }
                 }
             }
             CmdManage::Float => {
