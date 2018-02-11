@@ -9,9 +9,6 @@ fn main() {
             Ok(_) => {
                 let mut f = File::create(&dst).unwrap();
                 f.write_all(b"#![allow(unused_imports)]
-#![allow(alloc_jemalloc)]
-extern crate alloc_jemalloc;
-
 extern crate xr3wm;
 
 use std::default::Default;

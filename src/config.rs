@@ -163,12 +163,12 @@ impl Default for Config {
             keybindings: vec![Keybinding {
                                   mods: 0,
                                   key: "Return".to_string(),
-                                  cmd: Cmd::Exec("xterm -u8".to_string()),
+                                  cmd: Cmd::Exec("alacritty".to_string()),
                               },
                               Keybinding {
                                   mods: 0,
-                                  key: "d".to_string(),
-                                  cmd: Cmd::Exec("dmenu_run".to_string()),
+                                  key: "p".to_string(),
+                                  cmd: Cmd::Exec("rofi -show run".to_string()),
                               },
                               Keybinding {
                                   mods: MOD_SHIFT,

@@ -22,9 +22,9 @@ pub mod core {
     pub use ::workspaces::WorkspaceConfig;
 }
 
-mod xlib_window_system;
-mod config;
-mod workspaces;
-mod commands;
-mod keycode;
-mod layout;
+pub mod xlib_window_system;
+pub mod config;
+pub mod workspaces;
+pub mod commands;
+pub mod keycode;
+pub mod layout;
