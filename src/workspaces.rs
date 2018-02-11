@@ -208,32 +208,27 @@ impl Workspace {
 
     fn remove_urgent_window(&mut self, window: Window) {
         debug!{"Removing urgent window {}", window}
-        let index = self.unmanaged.urgent()
+        match self.unmanaged.urgent
             .iter()
             .enumerate()
             .find(|&(_, &x)| x == window)
-            .map(|(i, _)| i);
-        match index {
-            Some(i) => {
-                if i > 0 && i < self.unmanaged.urgent.len() {
-                    self.unmanaged.urgent.remove(i - 1);
-                } else {
-                    debug!{"removing 0. i: {}, unmanaged.urgent.len: {}, managed.urgent.len: {}",
-                           i, self.unmanaged.urgent.len(), self.managed.urgent.len()}
-                    if i < self.unmanaged.urgent.len() {
-                        if i == 0 {
-                            self.unmanaged.urgent.remove(0);
-                        } else {
-                            self.unmanaged.urgent.remove(i - 1);
-                        }
-                    } else {
-                        self.managed.urgent.remove(i - self.unmanaged.urgent.len());
-                    }
-                }
+            .map(|(i, _)| i) {
+            Some(index) => {
+                debug!{"removing 0. i: {}, unmanaged.urgent.len: {}, managed.urgent.len: {}", index, self.unmanaged.urgent.len(), self.managed.urgent.len()}
+                self.unmanaged.urgent.remove(index - 1);
             }
-            None => {
-                debug!{"Could not remove urgent window"}
+            _ => {}
+        }
+        match self.managed.urgent
+            .iter()
+            .enumerate()
+            .find(|&(_, &x)| x == window)
+            .map(|(i, _)| i) {
+            Some(index) => {
+                debug!{"removing 0. i: {}, unmanaged.urgent.len: {}, managed.urgent.len: {}", index, self.unmanaged.urgent.len(), self.managed.urgent.len()}
+                self.managed.urgent.remove(index - 1);
             }
+            _ => {}
         }
     }
 
