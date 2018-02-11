@@ -214,8 +214,8 @@ impl Workspace {
             .find(|&(_, &x)| x == window)
             .map(|(i, _)| i) {
             Some(index) => {
-                debug!{"removing 0. i: {}, unmanaged.urgent.len: {}, managed.urgent.len: {}", index, self.unmanaged.urgent.len(), self.managed.urgent.len()}
-                self.unmanaged.urgent.remove(index - 1);
+                debug!{"removing unmanaged. i: {}, unmanaged.urgent.len: {}, managed.urgent.len: {}", index, self.unmanaged.urgent.len(), self.managed.urgent.len()}
+                self.unmanaged.urgent.remove(index);
             }
             _ => {}
         }
@@ -225,8 +225,8 @@ impl Workspace {
             .find(|&(_, &x)| x == window)
             .map(|(i, _)| i) {
             Some(index) => {
-                debug!{"removing 0. i: {}, unmanaged.urgent.len: {}, managed.urgent.len: {}", index, self.unmanaged.urgent.len(), self.managed.urgent.len()}
-                self.managed.urgent.remove(index - 1);
+                debug!{"removing managed. i: {}, unmanaged.urgent.len: {}, managed.urgent.len: {}", index, self.unmanaged.urgent.len(), self.managed.urgent.len()}
+                self.managed.urgent.remove(index);
             }
             _ => {}
         }
