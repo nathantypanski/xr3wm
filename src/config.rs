@@ -185,7 +185,7 @@ impl Default for Config {
                               },
                               Keybinding {
                                   mods: MOD_SHIFT,
-                                  key: "q".to_string(),
+                                  key: "c".to_string(),
                                   cmd: Cmd::KillClient,
                               },
                               Keybinding {
@@ -240,7 +240,7 @@ impl Default for Config {
                               },
                               Keybinding {
                                   mods: MOD_SHIFT,
-                                  key: "c".to_string(),
+                                  key: "q".to_string(),
                                   cmd: Cmd::Exit,
                               },
                               Keybinding {

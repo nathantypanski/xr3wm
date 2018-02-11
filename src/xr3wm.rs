@@ -24,7 +24,6 @@ fn main() {
     env_logger::init();
 
     let mut config = Config::default();
-    config = Config::load();
 
     let ws = &XlibWindowSystem::new();
     ws.grab_modifier(config.mod_key);
