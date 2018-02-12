@@ -1,6 +1,20 @@
-# xr3wm [![Build Status](https://travis-ci.org/tsurai/xr3wm.svg?branch=master)](https://travis-ci.org/tsurai/xr3wm)
+# rx3wm
+
+Fork of [`xr3wm`](https://github.com/tsurai/xr3wm).
 
 i3 and xmonad inspiered tiling window manager written in Rust.
+
+## Why fork?
+
+The original `xr3wm` crashed repeatedly on my system. The version I cloned from
+GitHub did not even build. I want a working WM written in Rust that I can hack
+on in my free time. [`wtftw`](https://github.com/Kintaro/wtftw) doesn't fit the
+model I'm interested in (basically, an i3 clone in Rust) so forking `xr3wm` is
+the most obvious choice.
+
+Besides that, I'd rather fork an existing WM that is _almost_ there than write
+one from scratch. I'm a busy guy and don't want to waste time learning how
+window managers work when I can get a head-start using open-source code.
 
 ## Running
 
