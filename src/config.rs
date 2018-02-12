@@ -2,10 +2,7 @@
 
 use std::default::Default;
 use std::io::Write;
-use std::path::Path;
-use std::fs::{File, create_dir};
 use std::process::{Command, Child, Stdio};
-use std::mem;
 use layout::*;
 use keycode::*;
 use workspaces::{Workspaces, WorkspaceConfig};
@@ -284,79 +281,3 @@ impl Default for Config {
     }
 }
 
-impl Config {
-    fn compile() -> Result<(), String> {
-        let dst = Path::new(concat!(env!("HOME"), "/.xr3wm/.build"));
-        if !dst.exists() {
-            create_dir(dst)
-                .unwrap_or_else(|e| panic!("Failed to create config build directory: {}", e));
-        }
-
-        if !dst.join("Cargo.toml").exists() {
-            let mut f = File::create(dst.join("Cargo.toml")).unwrap();
-            f.write_all(b"[project]
-name = \"config\"
-version = \"0.0.1\"
-authors = [\"xr3wm\"]
-
-[dependencies.xr3wm]
-git = \"https://github.com/tsurai/xr3wm.git\"
-
-[lib]
-name = \"config\"
-path = \"../config.rs\"
-crate-type = [\"dylib\"]")
-                .unwrap();
-        }
-
-        let output = Command::new("cargo")
-            .arg("build")
-            .current_dir(dst)
-            .output()
-            .unwrap_or_else(|e| panic!("Failed to run cargo: {}", e));
-        if output.status.success() {
-            Ok(())
-        } else {
-            unsafe { Err(String::from_utf8_unchecked(output.stderr)) }
-        }
-    }
-
-    pub fn load() -> Config {
-        let mut cfg: Config = Default::default();
-
-        let mut xmsg = Command::new("xmessage")
-            .arg("-center")
-            .arg("Compiling config...").spawn().unwrap();
-
-        match Config::compile() {
-            Ok(_) => {
-                xmsg.kill().ok();
-                match DynamicLibrary::open(
-                    Some(&Path::new(concat!(env!("HOME"),
-                        "/.xr3wm/.build/target/debug/libconfig.so")))) {
-                    Ok(lib) => unsafe {
-                        match lib.symbol("config") {
-                            Ok(symbol) => {
-                                let f = mem::transmute::<*mut u8,
-                                                         extern "C" fn(&mut Config)>(symbol);
-                                cfg.lib = Some(lib);
-                                f(&mut cfg);
-                            }
-                            Err(e) => error!("Failed to load symbol: {}", e),
-                        }
-                    },
-                    Err(e) => error!("Failed to load libconfig: {}", e),
-                }
-            }
-            Err(e) => {
-                xmsg.kill().ok();
-                Command::new("xmessage")
-                    .arg("-center")
-                    .arg(format!("Failed to compile config:\n{}\nUsing default config", e)).spawn().unwrap();
-
-                error!("Failed to compile config: {}", e);
-            },
-        }
-        cfg
-    }
-}
