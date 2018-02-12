@@ -107,56 +107,47 @@ impl Cmd {
                 ws.close();
             }
             Cmd::KillClient => {
-                match workspaces.current_mut() {
-                    Some(wss) => {
-                        debug!("Cmd::KillClient: {:?}", wss.focused_window());
-                        ws.kill_window(wss.focused_window());
-                    }
-                    None => {}
-                }
+                workspaces.current_mut().map(|c| {
+                        debug!("Cmd::KillClient: {:?}", c.focused_window());
+                        ws.kill_window(c.focused_window());
+                });
             }
             Cmd::FocusUp => {
                 debug!("Cmd::FocusUp: {}", workspaces.current().focused_window());
-                match workspaces.current_mut() {
-                    Some(wss) => wss.move_focus(ws, config, MoveOp::Up),
-                    None => {}
-                }
+                workspaces.current_mut().map(|c| {
+                    c.move_focus(ws, config, MoveOp::Up);
+                });
             }
             Cmd::FocusDown => {
                 debug!("Cmd::FocusDown: {}", workspaces.current().focused_window());
-                match workspaces.current_mut() {
-                    Some(wss) => wss.move_focus(ws, config, MoveOp::Down),
-                    None => {}
-                }
+                workspaces.current_mut().map(|c| {
+                    c.move_focus(ws, config, MoveOp::Down);
+                });
             }
             Cmd::FocusMaster => {
                 debug!("Cmd::FocusMaster: {}",
                        workspaces.current().focused_window());
-                match workspaces.current_mut() {
-                    Some(wss) => wss.move_focus(ws, config, MoveOp::Swap),
-                    None => debug!("Cmd::FocusMaster on no workspace"),
-                }
+                workspaces.current_mut().map(|c| {
+                    c.move_focus(ws, config, MoveOp::Swap);
+                });
             }
             Cmd::SwapUp => {
                 debug!("Cmd::SwapUp: {}", workspaces.current().focused_window());
-                match workspaces.current_mut() {
-                    Some(wss) => wss.move_window(ws, config, MoveOp::Up),
-                    None => debug!("Cmd::SwapDown on no workspace")
-                }
+                workspaces.current_mut().map(|c| {
+                    c.move_window(ws, config, MoveOp::Up);
+                });
             }
             Cmd::SwapDown => {
                 debug!("Cmd::SwapDown: {}", workspaces.current().focused_window());
-                match workspaces.current_mut() {
-                    Some(wss) => wss.move_window(ws, config, MoveOp::Down),
-                    None => debug!("Cmd::SwapDown on no workspace")
-                }
+                workspaces.current_mut().map(|c| {
+                    c.move_window(ws, config, MoveOp::Down);
+                });
             }
             Cmd::SwapMaster => {
                 debug!("Cmd::SwapMaster: {}", workspaces.current().focused_window());
-                match workspaces.current_mut() {
-                    Some(wss) => wss.move_window(ws, config, MoveOp::Swap),
-                    None => {}
-                }
+                workspaces.current_mut().map(|c| {
+                    c.move_window(ws, config, MoveOp::Swap);
+                });
             }
         }
     }

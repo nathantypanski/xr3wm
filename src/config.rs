@@ -52,8 +52,11 @@ impl Statusbar {
     }
 
     pub fn xmobar() -> Statusbar {
+        let mut args = Vec::new();
+        args.push("-f".to_string());
+        args.push("xos4 Terminus 12".to_string());
         Statusbar::new("xmobar".to_string(),
-                       None,
+                       Some(args),
                        Box::new(move |info: LogInfo| -> String {
             let workspaces = info.workspaces
                 .iter()
@@ -246,7 +249,7 @@ impl Default for Config {
                                   cmd: Cmd::Reload,
                               }],
             manage_hooks: Vec::new(),
-            statusbar: None,
+            statusbar: Some(Statusbar::xmobar()),
         };
 
         for i in 1..10 {

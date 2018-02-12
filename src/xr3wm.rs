@@ -50,13 +50,10 @@ fn main() {
                     }
 
                     if !is_hooked {
-                        match workspaces.current_mut() {
-                            Some(wss) => {
-                                wss.add_window(ws, &config, window);
-                                wss.focus_window(ws, &config, window);
-                            }
-                            None => {}
-                        }
+                        workspaces.current_mut().map(|c| {
+                            c.add_window(ws, &config, window);
+                            c.focus_window(ws, &config, window);
+                        });
                     }
                 }
             }
@@ -92,10 +89,7 @@ fn main() {
             }
             XFocusOut(_) => {
                 debug!("XFocusOut");
-                match workspaces.current_mut() {
-                    Some(wss) => wss.unfocus_window(ws, &config),
-                    None => {}
-                }
+                workspaces.current_mut().map(|c| c.unfocus_window(ws, &config));
             }
             XButtonPress(window) => {
                 debug!("XButtonPress: {}", window);
