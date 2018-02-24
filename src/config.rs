@@ -230,6 +230,16 @@ impl Default for Config {
                               },
                               Keybinding {
                                   mods: 0,
+                                  key: "apostrophe".to_string(),
+                                  cmd: Cmd::SendLayoutMsg(LayoutMsg::SplitVertical),
+                              },
+                              Keybinding {
+                                  mods: MOD_SHIFT,
+                                  key: "apostrophe".to_string(),
+                                  cmd: Cmd::SendLayoutMsg(LayoutMsg::SplitHorizontal),
+                              },
+                              Keybinding {
+                                  mods: 0,
                                   key: "l".to_string(),
                                   cmd: Cmd::SendLayoutMsg(LayoutMsg::Increase),
                               },
