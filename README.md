@@ -1,4 +1,5 @@
-# rx3wm
+# rx3wm [![Build Status](https://travis-ci.org/nathantypanski/xr3wm.svg?branch=master)](https://travis-ci.org/nathantypanski/xr3wm)
+
 
 Fork of [`xr3wm`](https://github.com/tsurai/xr3wm).
 
